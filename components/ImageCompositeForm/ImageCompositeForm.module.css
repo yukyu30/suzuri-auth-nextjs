@@ -1,0 +1,8 @@
+.imageCompositeForm {
+  height: auto;
+  background-image: url('/image.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  aspect-ratio: 472 / 692;
+}
