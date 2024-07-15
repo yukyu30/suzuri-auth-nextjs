@@ -5,6 +5,12 @@
   margin: 0 auto;
 }
 
+.guide{
+  background-image: url('/smartphone-guide.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  aspect-ratio: 1063 / 1559;
+}
 .printableArea {
   padding-top: 17%;
   padding-left: 17%;
