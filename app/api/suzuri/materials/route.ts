@@ -7,10 +7,9 @@ export async function POST(request: Request) {
   if (!texture) {
     return NextResponse.json({ error: 'Texture is required' }, { status: 400 });
   }
-  console.log(texture);
   const session = await auth()
   const token = session?.accessToken
-  //sessionがなかったら401
+
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
