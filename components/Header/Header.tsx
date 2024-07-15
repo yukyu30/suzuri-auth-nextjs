@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from '../ui/dropdown-menu';
@@ -19,7 +18,7 @@ const Header = async () => {
   return (
     <div className="flex justify-between border-b pb-2 border-gray-200">
       <Link href="/" legacyBehavior passHref>
-        <div className="flex items-center">S Tools</div>
+        <img src="stool.svg" alt="SToolのロゴ" width={70} className="my-4" />
       </Link>
       {user ? (
         <DropdownMenu>
