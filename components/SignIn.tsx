@@ -1,14 +1,17 @@
 import { signIn } from '@/auth';
+import { Button } from './ui/button';
 
-export function SignIn() {
+export function SignIn({ redirect }: { redirect?: string }) {
   return (
-    <form
-      action={async () => {
-        'use server';
-        await signIn('suzuri');
-      }}
-    >
-      <button type="submit">Signin with SUZURI</button>
-    </form>
+    <div>
+      <form
+        action={async () => {
+          'use server';
+          await signIn('suzuri');
+        }}
+      >
+        <Button type="submit">Signin with SUZURI</Button>
+      </form>
+    </div>
   );
 }

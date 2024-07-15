@@ -7,9 +7,10 @@ declare module "next-auth" {
     accessToken: string
   }
 }
- 
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: <'jwt'>'jwt' },
+  
   callbacks: {
     async session({ session, token }: { session: any; token: any }) {
       session.user.id = token.id
@@ -35,6 +36,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token
     },
+
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      return !!auth
+    }
   },
   providers: [{
     id: 'suzuri',

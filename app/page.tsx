@@ -1,19 +1,44 @@
 import { auth } from '@/auth';
-import ImageCompositeForm from '@/components/ImageCompositeForm';
-import { SignIn } from '@/components/SignIn';
+
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+import Link from 'next/link';
 
 export default async function Home() {
   const session = await auth();
-  if (!session) {
-    return (
-      <main className="mx-auto min-h-screen p-24">
-        <SignIn />
-      </main>
-    );
-  }
+
+  const app = [
+    {
+      name: 'プロフィール スマホストラップジェネレーター',
+      description:
+        'QRコード、アイコンがデザインされたスマホストラップを作ります',
+      slug: 'profile-smart-phone-strap',
+    },
+  ];
   return (
-    <main className="mx-auto min-h-screen p-24">
-      <ImageCompositeForm />
-    </main>
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {app.map((item) => (
+          <Card key={item.slug}>
+            <Link href={`/app/${item.slug}`}>
+              <CardHeader className="tracking-wide">
+                <CardTitle>{item.name}</CardTitle>
+                <CardDescription>{item.description}</CardDescription>
+              </CardHeader>
+
+              <CardFooter>
+                <p>@yukyu30</p>
+              </CardFooter>
+            </Link>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 }
