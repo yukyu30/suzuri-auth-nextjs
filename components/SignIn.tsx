@@ -1,7 +1,7 @@
 import { signIn } from '@/auth';
 import { Button } from './ui/button';
 
-export function SignIn() {
+export function SignIn({ redirect }: { redirect?: string }) {
   return (
     <div>
       <form

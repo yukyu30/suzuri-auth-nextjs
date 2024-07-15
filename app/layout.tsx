@@ -21,8 +21,7 @@ export default function RootLayout({
         <div className="p-4">
           <Header />
         </div>
-
-        {children}
+        <div className="mx-4 mt-14">{children}</div>
       </body>
     </html>
   );

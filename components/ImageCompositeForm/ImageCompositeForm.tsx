@@ -4,10 +4,13 @@ import { QRCodeCanvas } from 'qrcode.react';
 import html2canvas from 'html2canvas';
 
 import styles from './ImageCompositeForm.module.css';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 
 const ImageCompositeForm = () => {
   const [image, setImage] = useState('');
   const [siteUrl, setSiteUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSiteUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSiteUrl(e.target.value);
@@ -16,9 +19,9 @@ const ImageCompositeForm = () => {
   return (
     <div className="mx-4">
       <div className="grid gap-6">
-        <input
+        <Input
+          id="picture"
           type="file"
-          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) {
@@ -31,23 +34,20 @@ const ImageCompositeForm = () => {
               reader.readAsDataURL(file);
             }
           }}
-          placeholder="画像を選択してください"
         />
-        <input
+        <Input
           type="text"
           value={siteUrl}
           onChange={handleSiteUrlChange}
           placeholder="QRコードにしたいURLを入れてください"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
+
         <div className="flex justify-center">
-          <button
-            disabled={!image || !siteUrl}
+          <Button
+            disabled={!image || !siteUrl || isLoading}
             type="button"
-            className={`${
-              (!image || !siteUrl) && 'opacity-50 cursor-not-allowed'
-            } text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800`}
             onClick={() => {
+              setIsLoading(true);
               const imageArea = document.getElementById('imageArea');
               if (imageArea) {
                 const originalWidth = imageArea.style.width;
@@ -65,6 +65,7 @@ const ImageCompositeForm = () => {
                     }).then(async (response) => {
                       const data = await response.json();
                       window.location.href = data.url;
+                      setIsLoading(false);
                     });
                     imageArea.style.width = originalWidth; // 元の幅に戻す
                   }
@@ -72,8 +73,8 @@ const ImageCompositeForm = () => {
               }
             }}
           >
-            SUZURIでグッズにする
-          </button>
+            {isLoading ? '作ってるよ！まっててね' : 'SUZURIでグッズにする'}
+          </Button>
         </div>
       </div>
       <hr className="my-4" />
