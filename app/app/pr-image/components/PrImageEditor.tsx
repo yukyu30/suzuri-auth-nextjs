@@ -31,6 +31,31 @@ type Tool =
 
 type BgColor = 'blue' | 'red' | 'yellow';
 
+// debounce関数の実装
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): T & { cancel: () => void } {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  const debounced = (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, wait);
+  };
+
+  debounced.cancel = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  };
+
+  return debounced as T & { cancel: () => void };
+}
+
 export const PrImageEditor = () => {
   const [scale, setScale] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -61,7 +86,7 @@ export const PrImageEditor = () => {
   const [activeTool, setActiveTool] = useState<Tool | null>(null);
 
   useEffect(() => {
-    const checkSize = () => {
+    const handleResize = debounce(() => {
       if (containerRef.current) {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
@@ -78,11 +103,19 @@ export const PrImageEditor = () => {
 
         setScale(newScale);
       }
-    };
+    }, 100);
 
-    checkSize();
-    window.addEventListener('resize', checkSize);
-    return () => window.removeEventListener('resize', checkSize);
+    // 初期サイズの設定
+    handleResize();
+
+    // イベントリスナーの追加
+    window.addEventListener('resize', handleResize);
+
+    // クリーンアップ
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      handleResize.cancel();
+    };
   }, [activeTool, STAGE_WIDTH, STAGE_HEIGHT]);
 
   const handleAddStamp = (image: HTMLImageElement) => {
@@ -274,8 +307,8 @@ export const PrImageEditor = () => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="fixed left-0 top-16 bottom-0 flex z-10">
-        <div className="bg-white border-r">
+      <div className="fixed left-0 top-16 bottom-0 border my-12 flex z-10 rounded-full shadow-lg">
+        <div className="bg-white rounded-full overflow-hidden">
           <Sidebar
             activeTool={activeTool}
             onToolSelect={handleToolSelect}
@@ -284,7 +317,7 @@ export const PrImageEditor = () => {
         </div>
 
         <div
-          className={`bg-white border-r transition-all duration-300 ease-in-out h-full ${
+          className={`bg-white transition-all duration-300 ease-in-out h-full ${
             activeTool && activeTool !== 'download' ? 'w-80' : 'w-0'
           } overflow-hidden`}
         >
@@ -299,29 +332,21 @@ export const PrImageEditor = () => {
       >
         <div className="p-6 pt-20">
           <div ref={containerRef} className="flex items-center justify-center">
-            <div
-              className="relative rounded-lg overflow-hidden bg-white border shadow-lg"
-              style={{
-                width: `${STAGE_WIDTH * scale}px`,
-                height: `${STAGE_HEIGHT * scale}px`,
-              }}
-            >
-              <Canvas
-                width={STAGE_WIDTH}
-                height={STAGE_HEIGHT}
-                scale={scale}
-                stageRef={stageRef}
-                bgImage={bgImage}
-                backgroundColor={backgroundColor}
-                stamps={stamps}
-                selectedStampId={selectedStampId}
-                onStageClick={handleStageClick}
-                onStampSelect={setSelectedStampId}
-                onStampDelete={handleDeleteStamp}
-                onStampDragEnd={handleStampDragEnd}
-                onStampTransformEnd={handleStampTransformEnd}
-              />
-            </div>
+            <Canvas
+              width={STAGE_WIDTH}
+              height={STAGE_HEIGHT}
+              scale={scale}
+              stageRef={stageRef}
+              bgImage={bgImage}
+              backgroundColor={backgroundColor}
+              stamps={stamps}
+              selectedStampId={selectedStampId}
+              onStageClick={handleStageClick}
+              onStampSelect={setSelectedStampId}
+              onStampDelete={handleDeleteStamp}
+              onStampDragEnd={handleStampDragEnd}
+              onStampTransformEnd={handleStampTransformEnd}
+            />
           </div>
         </div>
       </div>
