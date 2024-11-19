@@ -151,7 +151,6 @@ export const PrImageEditor = () => {
   return (
     <div className="flex flex-col items-center gap-4 min-h-screen bg-gray-100 p-4">
       <div className="w-full flex flex-col gap-4">
-        <StampList onSelectStamp={handleAddStamp} />
         <ProductList onSelectProduct={handleAddStamp} />
       </div>
 
@@ -175,6 +174,10 @@ export const PrImageEditor = () => {
           onStampDragEnd={handleStampDragEnd}
           onStampTransformEnd={handleStampTransformEnd}
         />
+      </div>
+      <div className="w-full flex flex-col gap-4">
+        <h2 className="text-lg font-bold">スタンプを追加する</h2>
+        <StampList onSelectStamp={handleAddStamp} />
       </div>
 
       <button
