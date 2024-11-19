@@ -307,8 +307,8 @@ export const PrImageEditor = () => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="fixed left-0 top-16 bottom-0 border my-12 flex z-10 rounded-full shadow-lg">
-        <div className="bg-white rounded-full overflow-hidden">
+      <div className="fixed left-0 top-16 bottom-0 my-12 flex z-10">
+        <div className="bg-white rounded-full overflow-hidden mr-4 shadow-[0_0_10px_rgba(0,0,0,0.1)] border-r border-gray-200">
           <Sidebar
             activeTool={activeTool}
             onToolSelect={handleToolSelect}
@@ -317,8 +317,8 @@ export const PrImageEditor = () => {
         </div>
 
         <div
-          className={`bg-white transition-all duration-300 ease-in-out h-full ${
-            activeTool && activeTool !== 'download' ? 'w-80' : 'w-0'
+          className={`bg-white transition-all duration-300 ease-in-out h-full shadow-[2px_0_10px_rgba(0,0,0,0.1)] ${
+            activeTool && activeTool !== 'download' ? 'w-80 border' : 'w-0'
           } overflow-hidden`}
         >
           <div className="w-80 h-full">{getToolPanel()}</div>
