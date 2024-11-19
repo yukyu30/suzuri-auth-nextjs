@@ -22,7 +22,12 @@ type Stamp = {
 
 type Size = 'x' | 'story' | 'post';
 
-type Tool = 'products' | 'stamps' | 'background-image' | 'background-color';
+type Tool =
+  | 'products'
+  | 'stamps'
+  | 'background-image'
+  | 'background-color'
+  | 'download';
 
 type BgColor = 'blue' | 'red' | 'yellow';
 
@@ -196,6 +201,14 @@ export const PrImageEditor = () => {
     setSelectedStampId(null);
   };
 
+  const handleToolSelect = (toolId: Tool | null) => {
+    if (toolId === 'download') {
+      handleSave();
+    } else {
+      setActiveTool(toolId);
+    }
+  };
+
   const getToolPanel = () => {
     switch (activeTool) {
       case 'products':
@@ -265,7 +278,7 @@ export const PrImageEditor = () => {
         <div className="bg-white border-r">
           <Sidebar
             activeTool={activeTool}
-            onToolSelect={(toolId) => setActiveTool(toolId)}
+            onToolSelect={handleToolSelect}
             onDownload={handleSave}
           />
         </div>
