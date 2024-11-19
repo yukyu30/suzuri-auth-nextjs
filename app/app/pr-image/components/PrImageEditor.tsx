@@ -60,16 +60,16 @@ export const PrImageEditor = () => {
       if (containerRef.current) {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
-        const sidebarWidth = activeTool ? 368 : 224;
-        const padding = 32;
-        const bottomSpace = 120;
+        const sidebarWidth = activeTool ? 368 : 56;
+        const headerHeight = 64;
+        const padding = 24;
 
         const availableWidth = windowWidth - sidebarWidth - padding * 2;
-        const availableHeight = windowHeight - bottomSpace - padding * 2;
+        const availableHeight = windowHeight - headerHeight - padding * 2;
 
         const scaleX = availableWidth / STAGE_WIDTH;
         const scaleY = availableHeight / STAGE_HEIGHT;
-        const newScale = Math.min(scaleX, scaleY, 1);
+        const newScale = Math.min(scaleX, scaleY);
 
         setScale(newScale);
       }
@@ -261,8 +261,8 @@ export const PrImageEditor = () => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="fixed left-0 top-0 h-screen flex z-10">
-        <div className="bg-white shadow-lg">
+      <div className="fixed left-0 top-16 bottom-0 flex z-10">
+        <div className="bg-white border-r">
           <Sidebar
             activeTool={activeTool}
             onToolSelect={(toolId) => setActiveTool(toolId)}
@@ -271,7 +271,7 @@ export const PrImageEditor = () => {
         </div>
 
         <div
-          className={`bg-white shadow-lg transition-all duration-300 ease-in-out h-full ${
+          className={`bg-white border-r transition-all duration-300 ease-in-out h-full ${
             activeTool && activeTool !== 'download' ? 'w-80' : 'w-0'
           } overflow-hidden`}
         >
@@ -281,16 +281,13 @@ export const PrImageEditor = () => {
 
       <div
         className={`flex-1 transition-all duration-300 ease-in-out ${
-          activeTool && activeTool !== 'download' ? 'ml-[368px]' : 'ml-[224px]'
+          activeTool && activeTool !== 'download' ? 'ml-[368px]' : 'ml-[56px]'
         }`}
       >
-        <div className="p-8 min-h-screen flex flex-col">
-          <div
-            ref={containerRef}
-            className="flex-1 flex items-center justify-center overflow-auto"
-          >
+        <div className="p-6 pt-20">
+          <div ref={containerRef} className="flex items-center justify-center">
             <div
-              className="relative rounded-lg overflow-hidden bg-gray-50"
+              className="relative rounded-lg overflow-hidden bg-white border shadow-lg"
               style={{
                 width: `${STAGE_WIDTH * scale}px`,
                 height: `${STAGE_HEIGHT * scale}px`,

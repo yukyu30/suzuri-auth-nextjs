@@ -41,7 +41,7 @@ export const Sidebar = ({
   };
 
   return (
-    <div className="w-14 h-full bg-white border-r">
+    <div className="w-14 bg-white border-r">
       <div className="flex flex-col py-4">
         {MENU_ITEMS.map((item) => (
           <button
