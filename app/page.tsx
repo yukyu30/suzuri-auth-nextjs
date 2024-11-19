@@ -20,6 +20,11 @@ export default async function Home() {
         'QRコード、アイコンがデザインされたスマホストラップを作ります',
       slug: 'profile-smart-phone-strap',
     },
+    {
+      name: 'PR画像生成',
+      description: 'プロフィール画像を生成します',
+      slug: 'pr-image',
+    },
   ];
   return (
     <div>
