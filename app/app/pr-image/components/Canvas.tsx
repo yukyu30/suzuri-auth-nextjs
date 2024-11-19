@@ -1,4 +1,4 @@
-import { Stage, Layer, Image } from 'react-konva';
+import { Stage, Layer, Image, Rect } from 'react-konva';
 import { EditableStamp } from './EditableStamp';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { MutableRefObject } from 'react';
@@ -25,6 +25,8 @@ type CanvasProps = {
   onStampSelect: (stampId: string) => void;
   onStampDragEnd: (stampId: string, e: KonvaEventObject<DragEvent>) => void;
   onStampTransformEnd: (stampId: string, e: KonvaEventObject<Event>) => void;
+  backgroundColor: string;
+  onStampDelete: () => void;
 };
 
 export const Canvas = ({
@@ -39,6 +41,8 @@ export const Canvas = ({
   onStampSelect,
   onStampDragEnd,
   onStampTransformEnd,
+  backgroundColor,
+  onStampDelete,
 }: CanvasProps) => {
   return (
     <Stage
@@ -53,6 +57,7 @@ export const Canvas = ({
       }}
     >
       <Layer>
+        <Rect width={width} height={height} fill={backgroundColor} />
         {bgImage && <Image image={bgImage} width={width} height={height} />}
 
         {stamps.map((stamp) => (
@@ -66,6 +71,7 @@ export const Canvas = ({
             rotation={stamp.rotation}
             isSelected={stamp.id === selectedStampId}
             onSelect={() => onStampSelect(stamp.id)}
+            onDelete={onStampDelete}
             onDragEnd={(e) => onStampDragEnd(stamp.id, e)}
             onTransformEnd={(e) => onStampTransformEnd(stamp.id, e)}
           />

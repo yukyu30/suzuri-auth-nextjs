@@ -6,6 +6,9 @@ import { Canvas } from './Canvas';
 import { StampList } from './StampList';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { ProductList } from './ProductList';
+import { ColorPalette } from './ColorPalette';
+import { Sidebar } from './Sidebar';
+import { BackgroundSelector } from './BackgroundSelector';
 
 type Stamp = {
   id: string;
@@ -17,26 +20,57 @@ type Stamp = {
   rotation: number;
 };
 
-export const PrImageEditor = () => {
-  const STAGE_WIDTH = 1280;
-  const STAGE_HEIGHT = 720;
+type Size = 'x' | 'story' | 'post';
 
+type Tool = 'products' | 'stamps' | 'background-image' | 'background-color';
+
+type BgColor = 'blue' | 'red' | 'yellow';
+
+export const PrImageEditor = () => {
   const [scale, setScale] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<any>(null);
 
-  const [bgImage] = useImage('/pr-image/bg-blue-x.png');
+  const [bgSize, setBgSize] = useState<Size>('x');
+  const [bgImageColor, setBgImageColor] = useState<BgColor>('blue');
+  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+
+  const bgImagePath = `/pr-image/bg-${bgImageColor}-${bgSize}.png`;
+  const [bgImage] = useImage(bgImagePath);
+
+  const getStageSize = () => {
+    switch (bgSize) {
+      case 'x':
+        return { width: 1280, height: 720 };
+      case 'story':
+        return { width: 1080, height: 1920 };
+      case 'post':
+        return { width: 1080, height: 1080 };
+    }
+  };
+
+  const { width: STAGE_WIDTH, height: STAGE_HEIGHT } = getStageSize();
+
   const [stamps, setStamps] = useState<Stamp[]>([]);
   const [selectedStampId, setSelectedStampId] = useState<string | null>(null);
+  const [activeTool, setActiveTool] = useState<Tool | null>(null);
 
   useEffect(() => {
     const checkSize = () => {
       if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const containerHeight = window.innerHeight - 180;
-        const scaleX = containerWidth / STAGE_WIDTH;
-        const scaleY = containerHeight / STAGE_HEIGHT;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const sidebarWidth = activeTool ? 368 : 224;
+        const padding = 32;
+        const bottomSpace = 120;
+
+        const availableWidth = windowWidth - sidebarWidth - padding * 2;
+        const availableHeight = windowHeight - bottomSpace - padding * 2;
+
+        const scaleX = availableWidth / STAGE_WIDTH;
+        const scaleY = availableHeight / STAGE_HEIGHT;
         const newScale = Math.min(scaleX, scaleY, 1);
+
         setScale(newScale);
       }
     };
@@ -44,16 +78,18 @@ export const PrImageEditor = () => {
     checkSize();
     window.addEventListener('resize', checkSize);
     return () => window.removeEventListener('resize', checkSize);
-  }, []);
+  }, [activeTool, STAGE_WIDTH, STAGE_HEIGHT]);
 
   const handleAddStamp = (image: HTMLImageElement) => {
+    if (!image) return;
+
     const newStamp: Stamp = {
       id: `stamp-${Date.now()}`,
       image,
       x: STAGE_WIDTH / 2,
       y: STAGE_HEIGHT / 2,
-      scaleX: 1,
-      scaleY: 1,
+      scaleX: 0.5,
+      scaleY: 0.5,
       rotation: 0,
     };
     setStamps((prev) => [...prev, newStamp]);
@@ -61,7 +97,8 @@ export const PrImageEditor = () => {
   };
 
   const handleStageClick = (e: KonvaEventObject<MouseEvent>) => {
-    if (e.target === e.target.getStage()) {
+    const clickedOnStage = e.target === e.target.getStage();
+    if (clickedOnStage) {
       setSelectedStampId(null);
     }
   };
@@ -109,15 +146,19 @@ export const PrImageEditor = () => {
 
     try {
       setSelectedStampId(null);
+
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       const stage = stageRef.current;
+
       const originalScale = {
         x: stage.scaleX(),
         y: stage.scaleY(),
       };
 
       stage.scale({ x: 1, y: 1 });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const dataURL = stage.toDataURL({
         mimeType: 'image/png',
@@ -148,44 +189,132 @@ export const PrImageEditor = () => {
     }
   };
 
+  const handleDeleteStamp = () => {
+    if (!selectedStampId) return;
+
+    setStamps((prev) => prev.filter((stamp) => stamp.id !== selectedStampId));
+    setSelectedStampId(null);
+  };
+
+  const getToolPanel = () => {
+    switch (activeTool) {
+      case 'products':
+        return (
+          <ProductList
+            onSelectProduct={handleAddStamp}
+            onClose={() => setActiveTool(null)}
+          />
+        );
+      case 'stamps':
+        return (
+          <StampList
+            onSelectStamp={handleAddStamp}
+            onClose={() => setActiveTool(null)}
+          />
+        );
+      case 'background-image':
+        return (
+          <BackgroundSelector
+            onClose={() => setActiveTool(null)}
+            onSelect={({ size, bgColor }) => {
+              setBgSize(size);
+              setBgImageColor(bgColor);
+              setActiveTool(null);
+            }}
+            currentSetting={{ size: bgSize, bgColor: bgImageColor }}
+          />
+        );
+      case 'background-color':
+        return (
+          <div className="p-4">
+            <div className="flex justify-between items-center border-b pb-4 mb-4">
+              <h2 className="text-lg font-bold">透過部分の色を設定</h2>
+              <button
+                onClick={() => setActiveTool(null)}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <svg
+                  className="w-5 h-5 text-gray-500"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <ColorPalette
+              color={backgroundColor}
+              onChange={(color) => {
+                setBackgroundColor(color);
+              }}
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center gap-4 min-h-screen bg-gray-100 p-4">
-      <div className="w-full flex flex-col gap-4">
-        <ProductList onSelectProduct={handleAddStamp} />
+    <div className="flex min-h-screen">
+      <div className="fixed left-0 top-0 h-screen flex z-10">
+        <div className="bg-white shadow-lg">
+          <Sidebar
+            activeTool={activeTool}
+            onToolSelect={(toolId) => setActiveTool(toolId)}
+            onDownload={handleSave}
+          />
+        </div>
+
+        <div
+          className={`bg-white shadow-lg transition-all duration-300 ease-in-out h-full ${
+            activeTool && activeTool !== 'download' ? 'w-80' : 'w-0'
+          } overflow-hidden`}
+        >
+          <div className="w-80 h-full">{getToolPanel()}</div>
+        </div>
       </div>
 
       <div
-        ref={containerRef}
-        className="w-full max-w-[1280px]"
-        style={{
-          height: `${STAGE_HEIGHT * scale}px`,
-        }}
+        className={`flex-1 transition-all duration-300 ease-in-out ${
+          activeTool && activeTool !== 'download' ? 'ml-[368px]' : 'ml-[224px]'
+        }`}
       >
-        <Canvas
-          width={STAGE_WIDTH}
-          height={STAGE_HEIGHT}
-          scale={scale}
-          stageRef={stageRef}
-          bgImage={bgImage}
-          stamps={stamps}
-          selectedStampId={selectedStampId}
-          onStageClick={handleStageClick}
-          onStampSelect={setSelectedStampId}
-          onStampDragEnd={handleStampDragEnd}
-          onStampTransformEnd={handleStampTransformEnd}
-        />
+        <div className="p-8 min-h-screen flex flex-col">
+          <div
+            ref={containerRef}
+            className="flex-1 flex items-center justify-center overflow-auto"
+          >
+            <div
+              className="relative rounded-lg overflow-hidden bg-gray-50"
+              style={{
+                width: `${STAGE_WIDTH * scale}px`,
+                height: `${STAGE_HEIGHT * scale}px`,
+              }}
+            >
+              <Canvas
+                width={STAGE_WIDTH}
+                height={STAGE_HEIGHT}
+                scale={scale}
+                stageRef={stageRef}
+                bgImage={bgImage}
+                backgroundColor={backgroundColor}
+                stamps={stamps}
+                selectedStampId={selectedStampId}
+                onStageClick={handleStageClick}
+                onStampSelect={setSelectedStampId}
+                onStampDelete={handleDeleteStamp}
+                onStampDragEnd={handleStampDragEnd}
+                onStampTransformEnd={handleStampTransformEnd}
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="w-full flex flex-col gap-4">
-        <h2 className="text-lg font-bold">スタンプを追加する</h2>
-        <StampList onSelectStamp={handleAddStamp} />
-      </div>
-
-      <button
-        onClick={handleSave}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        画像を保存
-      </button>
     </div>
   );
 };
