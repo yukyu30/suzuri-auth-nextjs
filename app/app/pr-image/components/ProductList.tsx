@@ -25,7 +25,7 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showSaleItemsOnly, setShowSaleItemsOnly] = useState(false);
+  const [showSaleItemsOnly, setShowSaleItemsOnly] = useState(true);
   const LIMIT = 30;
 
   const fetchProducts = async (currentOffset: number) => {
@@ -142,7 +142,7 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
               htmlFor="saleItemsFilter"
               className="text-sm text-gray-700 select-none"
             >
-              セール対象商品のみ表示
+              ブラックフライデーセール対象商品のみ表示
             </label>
           </div>
         </div>

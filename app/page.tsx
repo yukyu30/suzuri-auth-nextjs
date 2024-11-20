@@ -22,7 +22,7 @@ export default async function Home() {
     },
     {
       name: 'PR画像生成',
-      description: 'プロフィール画像を生成します',
+      description: 'ブラックフライデーのPR画像を生成します',
       slug: 'pr-image',
     },
   ];

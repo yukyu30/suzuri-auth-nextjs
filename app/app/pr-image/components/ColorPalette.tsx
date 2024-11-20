@@ -41,41 +41,26 @@ export const ColorPalette = ({ color, onChange }: ColorPaletteProps) => {
       </div>
 
       <div className="space-y-2">
-        <button
-          onClick={() => setShowCustom(!showCustom)}
-          className="text-sm text-blue-500 hover:text-blue-700"
-        >
-          {showCustom ? 'プリセットカラーを使用' : 'カスタムカラーを使用'}
-        </button>
-
-        {showCustom && (
-          <div className="space-y-4">
-            <div
-              className="w-full h-12 rounded-lg border-2 border-gray-200"
-              style={{ backgroundColor: color }}
-            />
-            <div className="flex items-center space-x-2">
-              <input
-                type="color"
-                value={color}
-                onChange={(e) => onChange(e.target.value)}
-                className="w-12 h-12 p-1 rounded border border-gray-200 cursor-pointer"
-              />
-              <input
-                type="text"
-                value={color.toUpperCase()}
-                onChange={(e) => {
-                  const newColor = e.target.value;
-                  if (/^#[0-9A-F]{6}$/i.test(newColor)) {
-                    onChange(newColor);
-                  }
-                }}
-                placeholder="#FFFFFF"
-                className="flex-1 px-3 py-2 border rounded-lg font-mono"
-              />
-            </div>
-          </div>
-        )}
+        <div className="flex items-center space-x-2">
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-12 h-12 p-1 rounded border border-gray-200 cursor-pointer"
+          />
+          <input
+            type="text"
+            value={color.toUpperCase()}
+            onChange={(e) => {
+              const newColor = e.target.value;
+              if (/^#[0-9A-F]{6}$/i.test(newColor)) {
+                onChange(newColor);
+              }
+            }}
+            placeholder="#FFFFFF"
+            className="flex-1 px-3 py-2 border rounded-lg font-mono"
+          />
+        </div>
       </div>
     </div>
   );

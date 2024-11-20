@@ -49,12 +49,9 @@ export const Canvas = ({
       ref={stageRef}
       width={width}
       height={height}
-      scaleX={scale}
-      scaleY={scale}
+      scaleX={scale < 1 ? scale : 1}
+      scaleY={scale < 1 ? scale : 1}
       onClick={onStageClick}
-      style={{
-        display: 'block',
-      }}
     >
       <Layer>
         <Rect width={width} height={height} fill={backgroundColor} />

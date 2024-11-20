@@ -306,7 +306,7 @@ export const PrImageEditor = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className={`mx-auto ${!!activeTool ? 'overflow-hidden' : ''}`}>
       <div className="fixed left-0 top-16 bottom-0 my-12 flex z-10">
         <div className="bg-white rounded-full overflow-hidden mr-4 shadow-[0_0_10px_rgba(0,0,0,0.1)] border-r border-gray-200">
           <Sidebar
@@ -326,29 +326,26 @@ export const PrImageEditor = () => {
       </div>
 
       <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${
+        className={`max-w-[1280px] max-h-[720px] ${
           activeTool && activeTool !== 'download' ? 'ml-[368px]' : 'ml-[56px]'
         }`}
+        ref={containerRef}
       >
-        <div className="p-6 pt-20">
-          <div ref={containerRef} className="flex items-center justify-center">
-            <Canvas
-              width={STAGE_WIDTH}
-              height={STAGE_HEIGHT}
-              scale={scale}
-              stageRef={stageRef}
-              bgImage={bgImage}
-              backgroundColor={backgroundColor}
-              stamps={stamps}
-              selectedStampId={selectedStampId}
-              onStageClick={handleStageClick}
-              onStampSelect={setSelectedStampId}
-              onStampDelete={handleDeleteStamp}
-              onStampDragEnd={handleStampDragEnd}
-              onStampTransformEnd={handleStampTransformEnd}
-            />
-          </div>
-        </div>
+        <Canvas
+          width={STAGE_WIDTH}
+          height={STAGE_HEIGHT}
+          scale={scale}
+          stageRef={stageRef}
+          bgImage={bgImage}
+          backgroundColor={backgroundColor}
+          stamps={stamps}
+          selectedStampId={selectedStampId}
+          onStageClick={handleStageClick}
+          onStampSelect={setSelectedStampId}
+          onStampDelete={handleDeleteStamp}
+          onStampDragEnd={handleStampDragEnd}
+          onStampTransformEnd={handleStampTransformEnd}
+        />
       </div>
     </div>
   );
