@@ -18,7 +18,12 @@ const Header = async () => {
   return (
     <div className="flex justify-between border-b pb-2 border-gray-200">
       <Link href="/" legacyBehavior passHref>
-        <img src="stool.svg" alt="SToolのロゴ" width={70} className="my-4" />
+        <div className="flex items-end space-x-2">
+          <img src="/stool.svg" alt="SToolのロゴ" width={70} className="my-4" />
+          <span className="text-xs font-gray-500 pb-[12px]">
+            SUZURI非公式ツール群
+          </span>
+        </div>
       </Link>
       {user ? (
         <DropdownMenu>

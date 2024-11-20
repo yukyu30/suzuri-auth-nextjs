@@ -306,7 +306,7 @@ export const PrImageEditor = () => {
   };
 
   return (
-    <div className={`mx-auto ${!!activeTool ? 'overflow-hidden' : ''}`}>
+    <div className={`mx-auto`}>
       <div className="fixed left-0 top-16 bottom-0 my-12 flex z-10">
         <div className="bg-white rounded-full overflow-hidden mr-4 shadow-[0_0_10px_rgba(0,0,0,0.1)] border-r border-gray-200">
           <Sidebar
@@ -317,16 +317,16 @@ export const PrImageEditor = () => {
         </div>
 
         <div
-          className={`bg-white transition-all duration-300 ease-in-out h-full shadow-[2px_0_10px_rgba(0,0,0,0.1)] ${
+          className={`bg-white overscroll-none transition-all duration-300 ease-in-out h-full shadow-[2px_0_10px_rgba(0,0,0,0.1)] ${
             activeTool && activeTool !== 'download' ? 'w-80 border' : 'w-0'
           } overflow-hidden`}
         >
-          <div className="w-80 h-full">{getToolPanel()}</div>
+          <div className="w-80 h-full overf">{getToolPanel()}</div>
         </div>
       </div>
 
       <div
-        className={`max-w-[1280px] max-h-[720px] ${
+        className={` ${
           activeTool && activeTool !== 'download' ? 'ml-[368px]' : 'ml-[56px]'
         }`}
         ref={containerRef}
