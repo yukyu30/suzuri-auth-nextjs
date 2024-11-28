@@ -10,6 +10,7 @@ import { ColorPalette } from './ColorPalette';
 import { Sidebar } from './Sidebar';
 import { BackgroundSelector } from './BackgroundSelector';
 import { LayerPanel } from './LayerPanel';
+import { Tool } from './Sidebar';
 
 type Stamp = {
   id: string;
@@ -304,7 +305,9 @@ export const PrImageEditor = () => {
     setLayers(newLayers);
   }, [stamps, bgImage]);
 
-  const getToolPanel = () => {
+  const renderTool = () => {
+    if (!activeTool) return null;
+
     switch (activeTool) {
       case 'products':
         return (
@@ -397,7 +400,7 @@ export const PrImageEditor = () => {
             activeTool && activeTool !== 'download' ? 'w-80 border' : 'w-0'
           } overflow-hidden`}
         >
-          <div className="w-80 h-full overf">{getToolPanel()}</div>
+          <div className="w-80 h-full overf">{renderTool()}</div>
         </div>
       </div>
 
