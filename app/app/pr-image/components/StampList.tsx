@@ -3,19 +3,20 @@ import useImage from 'use-image';
 type Stamp = {
   id: string;
   src: string;
+  name: string;
 };
 
 const STAMPS: Stamp[] = [
-  { id: 'star', src: '/pr-image/stamp-star.png' },
-  { id: 'simile', src: '/pr-image/stamp-smile.png' },
-  { id: 'heart', src: '/pr-image/stamp-heart.png' },
-  { id: 'share', src: '/pr-image/stamp-share.png' },
-  { id: 'low-price', src: '/pr-image/stamp-low-price.png' },
-  { id: 'good', src: '/pr-image/stamp-good.png' },
+  { id: 'star', src: '/pr-image/stamp-star.png', name: 'スター' },
+  { id: 'simile', src: '/pr-image/stamp-smile.png', name: 'スマイル' },
+  { id: 'heart', src: '/pr-image/stamp-heart.png', name: 'ハート' },
+  { id: 'share', src: '/pr-image/stamp-share.png', name: 'シェア' },
+  { id: 'low-price', src: '/pr-image/stamp-low-price.png', name: 'お買い得' },
+  { id: 'good', src: '/pr-image/stamp-good.png', name: 'いいね' },
 ];
 
 type StampListProps = {
-  onSelectStamp: (image: HTMLImageElement) => void;
+  onSelectStamp: (image: HTMLImageElement, name: string) => void;
   onClose: () => void;
 };
 
@@ -48,6 +49,7 @@ export const StampList = ({ onSelectStamp, onClose }: StampListProps) => {
             <StampButton
               key={stamp.id}
               src={stamp.src}
+              name={stamp.name}
               onSelect={onSelectStamp}
             />
           ))}
@@ -59,15 +61,16 @@ export const StampList = ({ onSelectStamp, onClose }: StampListProps) => {
 
 type StampButtonProps = {
   src: string;
-  onSelect: (image: HTMLImageElement) => void;
+  name: string;
+  onSelect: (image: HTMLImageElement, name: string) => void;
 };
 
-const StampButton = ({ src, onSelect }: StampButtonProps) => {
+const StampButton = ({ src, name, onSelect }: StampButtonProps) => {
   const [image] = useImage(src);
 
   return (
     <button
-      onClick={() => image && onSelect(image)}
+      onClick={() => image && onSelect(image, name)}
       className="aspect-square flex items-center justify-center border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
     >
       {image && (

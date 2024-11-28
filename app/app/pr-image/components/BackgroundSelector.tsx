@@ -53,7 +53,7 @@ export const BackgroundSelector = ({
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b flex justify-between items-center">
-        <h2 className="text-lg font-bold">背景画像を設定</h2>
+        <h2 className="text-lg font-bold">フレームを設定</h2>
         <button
           onClick={onClose}
           className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -95,7 +95,7 @@ export const BackgroundSelector = ({
         </div>
 
         <div>
-          <h3 className="text-sm font-medium mb-3">背景画像の色を選択</h3>
+          <h3 className="text-sm font-medium mb-3">フレームの色を選択</h3>
           <div className="grid grid-cols-3 gap-2">
             {BG_COLORS.map((color) => (
               <button
