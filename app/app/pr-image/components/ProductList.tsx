@@ -14,7 +14,7 @@ type Product = {
 const SALE_ITEM_IDS = [1, 15, 106, 9, 96, 28, 5, 95, 146, 3, 13, 151, 109];
 
 type ProductListProps = {
-  onSelectProduct: (image: HTMLImageElement) => void;
+  onSelectProduct: (image: HTMLImageElement, name: string) => void;
   onClose: () => void;
 };
 
@@ -86,7 +86,7 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
   return (
     <div className="flex flex-col h-full bg-gray-50">
       <div className="p-4 bg-white border-b flex justify-between items-center">
-        <h2 className="text-lg font-bold">商品を追加</h2>
+        <h2 className="text-lg font-bold">グッズを追加</h2>
         <button
           onClick={onClose}
           className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -113,7 +113,7 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
               type="text"
               value={searchTerm}
               onChange={handleSearch}
-              placeholder="商品名で検索..."
+              placeholder="グッズ名で検索..."
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <svg
@@ -142,7 +142,7 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
               htmlFor="saleItemsFilter"
               className="text-sm text-gray-700 select-none"
             >
-              ブラックフライデーセール対象商品のみ表示
+              ブラックフライデーセール対象グッズのみ表示
             </label>
           </div>
         </div>
@@ -172,8 +172,8 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
               <div className="text-center">
                 <p className="text-lg mb-2">
                   {searchTerm || showSaleItemsOnly
-                    ? '条件に一致する商品が見つかりません'
-                    : '商品がありません'}
+                    ? '条件に一致するグッズが見つかりません'
+                    : 'グッズがありません'}
                 </p>
                 <p className="text-sm">
                   {searchTerm && '検索条件を変更してお試しください'}
@@ -201,7 +201,7 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
 type ProductButtonProps = {
   src: string;
   title: string;
-  onSelect: (image: HTMLImageElement) => void;
+  onSelect: (image: HTMLImageElement, name: string) => void;
   isSaleItem: boolean;
 };
 
@@ -216,7 +216,7 @@ const ProductButton = ({
 
   return (
     <button
-      onClick={() => image && onSelect(image)}
+      onClick={() => image && onSelect(image, title)}
       className={`group relative flex flex-col bg-white border rounded-lg overflow-hidden transition-all hover:shadow-md ${
         isSaleItem ? 'border-red-200' : 'border-gray-200'
       }`}

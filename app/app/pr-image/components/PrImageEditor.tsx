@@ -9,6 +9,8 @@ import { ProductList } from './ProductList';
 import { ColorPalette } from './ColorPalette';
 import { Sidebar } from './Sidebar';
 import { BackgroundSelector } from './BackgroundSelector';
+import { LayerPanel } from './LayerPanel';
+import { Tool } from './Sidebar';
 
 type Stamp = {
   id: string;
@@ -18,6 +20,8 @@ type Stamp = {
   scaleX: number;
   scaleY: number;
   rotation: number;
+  type: 'stamp' | 'product';
+  name: string;
 };
 
 type Size = 'x' | 'story' | 'post';
@@ -30,6 +34,13 @@ type Tool =
   | 'download';
 
 type BgColor = 'blue' | 'red' | 'yellow';
+
+type LayerItem = {
+  id: string;
+  type: 'stamp' | 'product' | 'background';
+  label: string;
+  name: string;
+};
 
 // debounce関数の実装
 function debounce<T extends (...args: any[]) => any>(
@@ -84,6 +95,8 @@ export const PrImageEditor = () => {
   const [stamps, setStamps] = useState<Stamp[]>([]);
   const [selectedStampId, setSelectedStampId] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<Tool | null>(null);
+  const [isBgFront, setIsBgFront] = useState(false);
+  const [layers, setLayers] = useState<LayerItem[]>([]);
 
   useEffect(() => {
     const handleResize = debounce(() => {
@@ -118,7 +131,11 @@ export const PrImageEditor = () => {
     };
   }, [activeTool, STAGE_WIDTH, STAGE_HEIGHT]);
 
-  const handleAddStamp = (image: HTMLImageElement) => {
+  const handleAddStamp = (
+    image: HTMLImageElement,
+    type: 'stamp' | 'product',
+    name: string
+  ) => {
     if (!image) return;
 
     const newStamp: Stamp = {
@@ -129,6 +146,8 @@ export const PrImageEditor = () => {
       scaleX: 0.5,
       scaleY: 0.5,
       rotation: 0,
+      type,
+      name,
     };
     setStamps((prev) => [...prev, newStamp]);
     setSelectedStampId(newStamp.id);
@@ -242,19 +261,69 @@ export const PrImageEditor = () => {
     }
   };
 
-  const getToolPanel = () => {
+  const handleStampOrderChange = (sourceIndex: number, targetIndex: number) => {
+    setStamps((prevStamps) => {
+      const newStamps = [...prevStamps];
+      const [removed] = newStamps.splice(sourceIndex, 1);
+      newStamps.splice(targetIndex, 0, removed);
+      return newStamps;
+    });
+  };
+
+  const handleLayerOrderChange = (sourceIndex: number, targetIndex: number) => {
+    setLayers((prevLayers) => {
+      const newLayers = [...prevLayers];
+      const [removed] = newLayers.splice(sourceIndex, 1);
+      newLayers.splice(targetIndex, 0, removed);
+      return newLayers;
+    });
+  };
+
+  useEffect(() => {
+    const newLayers: LayerItem[] = [];
+
+    // フレームがある場合は追加
+    if (bgImage) {
+      newLayers.push({
+        id: 'background',
+        type: 'background',
+        label: 'フレーム',
+        name: 'フレーム',
+      });
+    }
+
+    // スタンプを追加
+    stamps.forEach((stamp) => {
+      newLayers.push({
+        id: stamp.id,
+        type: stamp.type,
+        label: stamp.type === 'product' ? 'グッズ画像' : 'スタンプ',
+        name: stamp.name,
+      });
+    });
+
+    setLayers(newLayers);
+  }, [stamps, bgImage]);
+
+  const renderTool = () => {
+    if (!activeTool) return null;
+
     switch (activeTool) {
       case 'products':
         return (
           <ProductList
-            onSelectProduct={handleAddStamp}
+            onSelectProduct={(image, name) =>
+              handleAddStamp(image, 'product', name)
+            }
             onClose={() => setActiveTool(null)}
           />
         );
       case 'stamps':
         return (
           <StampList
-            onSelectStamp={handleAddStamp}
+            onSelectStamp={(image, name) =>
+              handleAddStamp(image, 'stamp', name)
+            }
             onClose={() => setActiveTool(null)}
           />
         );
@@ -300,6 +369,16 @@ export const PrImageEditor = () => {
             />
           </div>
         );
+      case 'layers':
+        return (
+          <LayerPanel
+            onClose={() => setActiveTool(null)}
+            stamps={stamps}
+            onLayerOrderChange={handleLayerOrderChange}
+            bgImage={bgImage}
+            layers={layers}
+          />
+        );
       default:
         return null;
     }
@@ -321,7 +400,7 @@ export const PrImageEditor = () => {
             activeTool && activeTool !== 'download' ? 'w-80 border' : 'w-0'
           } overflow-hidden`}
         >
-          <div className="w-80 h-full overf">{getToolPanel()}</div>
+          <div className="w-80 h-full overf">{renderTool()}</div>
         </div>
       </div>
 
@@ -345,6 +424,8 @@ export const PrImageEditor = () => {
           onStampDelete={handleDeleteStamp}
           onStampDragEnd={handleStampDragEnd}
           onStampTransformEnd={handleStampTransformEnd}
+          isBgFront={isBgFront}
+          layers={layers}
         />
       </div>
     </div>

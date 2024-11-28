@@ -13,6 +13,13 @@ type Stamp = {
   rotation: number;
 };
 
+type LayerItem = {
+  id: string;
+  type: 'stamp' | 'product' | 'background';
+  label: string;
+  name: string;
+};
+
 type CanvasProps = {
   width: number;
   height: number;
@@ -27,6 +34,8 @@ type CanvasProps = {
   onStampTransformEnd: (stampId: string, e: KonvaEventObject<Event>) => void;
   backgroundColor: string;
   onStampDelete: () => void;
+  isBgFront: boolean;
+  layers: LayerItem[];
 };
 
 export const Canvas = ({
@@ -43,6 +52,8 @@ export const Canvas = ({
   onStampTransformEnd,
   backgroundColor,
   onStampDelete,
+  isBgFront,
+  layers,
 }: CanvasProps) => {
   return (
     <Stage
@@ -55,24 +66,42 @@ export const Canvas = ({
     >
       <Layer>
         <Rect width={width} height={height} fill={backgroundColor} />
-        {bgImage && <Image image={bgImage} width={width} height={height} />}
 
-        {stamps.map((stamp) => (
-          <EditableStamp
-            key={stamp.id}
-            image={stamp.image}
-            x={stamp.x}
-            y={stamp.y}
-            scaleX={stamp.scaleX}
-            scaleY={stamp.scaleY}
-            rotation={stamp.rotation}
-            isSelected={stamp.id === selectedStampId}
-            onSelect={() => onStampSelect(stamp.id)}
-            onDelete={onStampDelete}
-            onDragEnd={(e) => onStampDragEnd(stamp.id, e)}
-            onTransformEnd={(e) => onStampTransformEnd(stamp.id, e)}
-          />
-        ))}
+        {layers?.map((layer) => {
+          if (layer.type === 'background') {
+            return (
+              bgImage && (
+                <Image
+                  key={layer.id}
+                  image={bgImage}
+                  width={width}
+                  height={height}
+                  listening={false}
+                />
+              )
+            );
+          } else {
+            const stamp = stamps.find((s) => s.id === layer.id);
+            return (
+              stamp && (
+                <EditableStamp
+                  key={stamp.id}
+                  image={stamp.image}
+                  x={stamp.x}
+                  y={stamp.y}
+                  scaleX={stamp.scaleX}
+                  scaleY={stamp.scaleY}
+                  rotation={stamp.rotation}
+                  isSelected={stamp.id === selectedStampId}
+                  onSelect={() => onStampSelect(stamp.id)}
+                  onDelete={onStampDelete}
+                  onDragEnd={(e) => onStampDragEnd(stamp.id, e)}
+                  onTransformEnd={(e) => onStampTransformEnd(stamp.id, e)}
+                />
+              )
+            );
+          }
+        })}
       </Layer>
     </Stage>
   );
