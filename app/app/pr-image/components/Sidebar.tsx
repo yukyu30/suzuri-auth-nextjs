@@ -5,6 +5,7 @@ type Tool =
   | 'background-color'
   | 'products'
   | 'stamps'
+  | 'layers'
   | 'download';
 
 type MenuItem = {
@@ -18,6 +19,7 @@ const MENU_ITEMS: MenuItem[] = [
   { id: 'background-color', label: '背景色', icon: '🎨' },
   { id: 'products', label: '商品', icon: '🛍️' },
   { id: 'stamps', label: 'スタンプ', icon: '✨' },
+  { id: 'layers', label: 'レイヤー', icon: '📑' },
   { id: 'download', label: 'ダウンロード', icon: '💾' },
 ];
 

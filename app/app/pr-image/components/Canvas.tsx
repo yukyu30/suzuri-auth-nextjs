@@ -27,6 +27,7 @@ type CanvasProps = {
   onStampTransformEnd: (stampId: string, e: KonvaEventObject<Event>) => void;
   backgroundColor: string;
   onStampDelete: () => void;
+  isBgFront: boolean;
 };
 
 export const Canvas = ({
@@ -43,6 +44,7 @@ export const Canvas = ({
   onStampTransformEnd,
   backgroundColor,
   onStampDelete,
+  isBgFront,
 }: CanvasProps) => {
   return (
     <Stage
@@ -55,7 +57,9 @@ export const Canvas = ({
     >
       <Layer>
         <Rect width={width} height={height} fill={backgroundColor} />
-        {bgImage && <Image image={bgImage} width={width} height={height} />}
+        {!isBgFront && bgImage && (
+          <Image image={bgImage} width={width} height={height} />
+        )}
 
         {stamps.map((stamp) => (
           <EditableStamp
@@ -73,6 +77,10 @@ export const Canvas = ({
             onTransformEnd={(e) => onStampTransformEnd(stamp.id, e)}
           />
         ))}
+
+        {isBgFront && bgImage && (
+          <Image image={bgImage} width={width} height={height} />
+        )}
       </Layer>
     </Stage>
   );

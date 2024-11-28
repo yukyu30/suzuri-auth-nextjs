@@ -9,6 +9,7 @@ import { ProductList } from './ProductList';
 import { ColorPalette } from './ColorPalette';
 import { Sidebar } from './Sidebar';
 import { BackgroundSelector } from './BackgroundSelector';
+import { LayerPanel } from './LayerPanel';
 
 type Stamp = {
   id: string;
@@ -84,6 +85,7 @@ export const PrImageEditor = () => {
   const [stamps, setStamps] = useState<Stamp[]>([]);
   const [selectedStampId, setSelectedStampId] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<Tool | null>(null);
+  const [isBgFront, setIsBgFront] = useState(false);
 
   useEffect(() => {
     const handleResize = debounce(() => {
@@ -300,6 +302,14 @@ export const PrImageEditor = () => {
             />
           </div>
         );
+      case 'layers':
+        return (
+          <LayerPanel
+            onClose={() => setActiveTool(null)}
+            isBgFront={isBgFront}
+            onBgFrontChange={setIsBgFront}
+          />
+        );
       default:
         return null;
     }
@@ -345,6 +355,7 @@ export const PrImageEditor = () => {
           onStampDelete={handleDeleteStamp}
           onStampDragEnd={handleStampDragEnd}
           onStampTransformEnd={handleStampTransformEnd}
+          isBgFront={isBgFront}
         />
       </div>
     </div>
