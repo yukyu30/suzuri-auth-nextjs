@@ -6,12 +6,12 @@ type Stamp = {
 };
 
 const STAMPS: Stamp[] = [
-  { id: 'star', src: '/pr-image/stamp-star.png' },
-  { id: 'simile', src: '/pr-image/stamp-smile.png' },
-  { id: 'heart', src: '/pr-image/stamp-heart.png' },
-  { id: 'share', src: '/pr-image/stamp-share.png' },
-  { id: 'low-price', src: '/pr-image/stamp-low-price.png' },
-  { id: 'good', src: '/pr-image/stamp-good.png' },
+  { id: 'daruma', src: '/pr-image/stamp-daruma.png' },
+  { id: 'mochi', src: '/pr-image/stamp-mochi.png' },
+  { id: 'ooiri', src: '/pr-image/stamp-ooiri.png' },
+  { id: 'snake-black', src: '/pr-image/stamp-snake-black.png' },
+  { id: 'snake-red', src: '/pr-image/stamp-snake-red.png' },
+  { id: 'snake-white', src: '/pr-image/stamp-snake-white.png' },
 ];
 
 type StampListProps = {

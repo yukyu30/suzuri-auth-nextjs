@@ -11,7 +11,9 @@ type Product = {
   };
 };
 
-const SALE_ITEM_IDS = [1, 15, 106, 9, 96, 28, 5, 95, 146, 3, 13, 151, 109];
+const SALE_ITEM_IDS = [
+  9, 96, 28, 5, 95, 15, 1, 112, 148, 149, 111, 100, 2, 158, 62, 16, 108, 61,
+];
 
 type ProductListProps = {
   onSelectProduct: (image: HTMLImageElement) => void;

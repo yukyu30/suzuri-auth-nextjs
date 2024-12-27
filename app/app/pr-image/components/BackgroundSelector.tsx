@@ -1,11 +1,9 @@
 import { useState } from 'react';
 
-type Size = 'x' | 'story' | 'post';
-type BgColor = 'blue' | 'red' | 'yellow';
+type Size = 'square' | 'rectangle';
 
 type BackgroundSetting = {
   size: Size;
-  bgColor: BgColor;
 };
 
 const SIZES: {
@@ -14,20 +12,18 @@ const SIZES: {
   dimensions: string;
   aspectRatio: string;
 }[] = [
-  { id: 'x', label: 'X用', dimensions: '1280×720', aspectRatio: '16:9' },
   {
-    id: 'story',
-    label: 'Instagram Story用',
+    id: 'square',
+    label: '正方形',
+    dimensions: '1200×1200',
+    aspectRatio: '1:1',
+  },
+  {
+    id: 'rectangle',
+    label: '縦長',
     dimensions: '1080×1920',
     aspectRatio: '9:16',
   },
-  { id: 'post', label: '正方形', dimensions: '1936×1936', aspectRatio: '1:1' },
-];
-
-const BG_COLORS: { id: BgColor; label: string }[] = [
-  { id: 'blue', label: 'ブルー' },
-  { id: 'red', label: 'レッド' },
-  { id: 'yellow', label: 'イエロー' },
 ];
 
 type BackgroundSelectorProps = {
@@ -42,12 +38,9 @@ export const BackgroundSelector = ({
   currentSetting,
 }: BackgroundSelectorProps) => {
   const [selectedSize, setSelectedSize] = useState<Size>(currentSetting.size);
-  const [selectedBgColor, setSelectedBgColor] = useState<BgColor>(
-    currentSetting.bgColor
-  );
 
   const handleApply = () => {
-    onSelect({ size: selectedSize, bgColor: selectedBgColor });
+    onSelect({ size: selectedSize });
   };
 
   return (
@@ -94,24 +87,6 @@ export const BackgroundSelector = ({
           </div>
         </div>
 
-        <div>
-          <h3 className="text-sm font-medium mb-3">背景画像の色を選択</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {BG_COLORS.map((color) => (
-              <button
-                key={color.id}
-                onClick={() => setSelectedBgColor(color.id)}
-                className={`p-3 rounded-lg border-2 text-center transition-colors ${
-                  selectedBgColor === color.id
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:bg-gray-50'
-                }`}
-              >
-                {color.label}
-              </button>
-            ))}
-          </div>
-        </div>
         <button
           onClick={handleApply}
           className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
