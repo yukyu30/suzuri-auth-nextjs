@@ -21,8 +21,8 @@ export default async function Home() {
       slug: 'profile-smart-phone-strap',
     },
     {
-      name: 'PR画像生成',
-      description: 'ブラックフライデーのPR画像を生成します',
+      name: 'PR画像作成',
+      description: '新春セールのPR画像を作成します',
       slug: 'pr-image',
     },
   ];
