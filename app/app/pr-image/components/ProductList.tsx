@@ -144,7 +144,7 @@ export const ProductList = ({ onSelectProduct, onClose }: ProductListProps) => {
               htmlFor="saleItemsFilter"
               className="text-sm text-gray-700 select-none"
             >
-              ブラックフライデーセール対象商品のみ表示
+              新春セール対象商品のみ表示
             </label>
           </div>
         </div>

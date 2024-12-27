@@ -20,7 +20,7 @@ type Stamp = {
   rotation: number;
 };
 
-type Size = 'x' | 'story' | 'post';
+type Size = 'square' | 'rectangle';
 
 type Tool =
   | 'products'
@@ -28,8 +28,6 @@ type Tool =
   | 'background-image'
   | 'background-color'
   | 'download';
-
-type BgColor = 'blue' | 'red' | 'yellow';
 
 // debounce関数の実装
 function debounce<T extends (...args: any[]) => any>(
@@ -61,21 +59,18 @@ export const PrImageEditor = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<any>(null);
 
-  const [bgSize, setBgSize] = useState<Size>('x');
-  const [bgImageColor, setBgImageColor] = useState<BgColor>('blue');
+  const [bgSize, setBgSize] = useState<Size>('square');
   const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
 
-  const bgImagePath = `/pr-image/bg-${bgImageColor}-${bgSize}.png`;
+  const bgImagePath = `/pr-image/bg-${bgSize}.png`;
   const [bgImage] = useImage(bgImagePath);
 
   const getStageSize = () => {
     switch (bgSize) {
-      case 'x':
-        return { width: 1280, height: 720 };
-      case 'story':
+      case 'square':
+        return { width: 1200, height: 1200 };
+      case 'rectangle':
         return { width: 1080, height: 1920 };
-      case 'post':
-        return { width: 1080, height: 1080 };
     }
   };
 
@@ -262,12 +257,11 @@ export const PrImageEditor = () => {
         return (
           <BackgroundSelector
             onClose={() => setActiveTool(null)}
-            onSelect={({ size, bgColor }) => {
+            onSelect={({ size }) => {
               setBgSize(size);
-              setBgImageColor(bgColor);
               setActiveTool(null);
             }}
-            currentSetting={{ size: bgSize, bgColor: bgImageColor }}
+            currentSetting={{ size: bgSize }}
           />
         );
       case 'background-color':
