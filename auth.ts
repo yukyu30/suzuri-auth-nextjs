@@ -23,8 +23,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       account,
     }: {
       token: any
-      user: any
-      account: any
+      user?: any
+      account?: any
     }) {
       if (user) {
         token.id = user.id
