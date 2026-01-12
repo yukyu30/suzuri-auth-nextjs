@@ -25,6 +25,12 @@ export default async function Home() {
       description: '新春セールのPR画像を作成します',
       slug: 'pr-image',
     },
+    {
+      name: 'スリスリAIチャット',
+      description:
+        'スリスリくん（忍者）とチャットしながら、SUZURIの商品を探せます',
+      slug: 'ai-chat',
+    },
   ];
   return (
     <div>
